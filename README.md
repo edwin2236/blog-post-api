@@ -23,7 +23,7 @@ A RESTful API for managing blog posts built with Node.js, Express, TypeScript, a
 1. Clone the repository:
 
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/edwin2236/blog-post-api.git
     cd blog-post-api
     ```
 
@@ -36,19 +36,25 @@ A RESTful API for managing blog posts built with Node.js, Express, TypeScript, a
 3. Set up environment variables:
 
     ```bash
-    cp .env.example .env
+    cp .env.example .env && pnpx auth secret
     ```
 
 4. Start the development environment:
 
     ```bash
-    docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+    docker compose up --build -d
     ```
 
-5. Run database migrations:
+5. Run generate prisma client
 
     ```bash
-    pnpm prisma migrate dev
+    pnpm prisma:generate
+    ```
+
+6. Run database migrations:
+
+    ```bash
+    pnpm prisma:migrate
     ```
 
 ## 🏃‍♂️ Development
@@ -84,53 +90,67 @@ pnpm start
 ## 📦 Project Structure
 
 ```text
-.vscode/
+├── .vscode/
 │   ├── launch.json
 │   └── settings.json
 ├── compose/
 │   ├── .dockerignore
 │   ├── docker-compose.yml
 │   └── Dockerfile
+├── logs/
+│   ├── error.log
+│   └── combined.log
 ├── src/
-│   ├── app/
+│   ├── features/
+│   │   ├── auth/
+│   │   │   ├── application/
+│   │   │   ├── domain/
+│   │   │   ├── infrastructure/
+│   │   │   └── presentation/
+│   │   │       ├── controllers/
+│   │   │       ├── dtos/
+│   │   │       └── auth.router.ts
 │   │   ├── users/
-│   │   │   ├── controllers/
-│   │   │   ├── models/
-│   │   │   ├── repositories/
-│   │   │   ├── services/
-│   │   │   ├── dtos/
-│   │   │   └── user.router.ts
-│   │   └── posts/
-│   │   │   ├── controllers/
-│   │   │   ├── models/
-│   │   │   ├── repositories/
-│   │   │   ├── services/
-│   │   │   ├── dtos/
-│   │   │   └── user.router.ts
-│   ├── config/
-│   │   ├── database.ts
-│   │   ├── logger.ts
-│   │   └── environment.ts
-│   ├── middleware/
-│   │   ├── auth.middleware.ts
-│   │   ├── error.middleware.ts
-│   │   └── validation.middleware.ts
+│   │   │   ├── application/
+│   │   │   ├── domain/
+│   │   │   │   └── repositories/
+│   │   │   │       └── user-repository.ts
+│   │   │   ├── infrastructure/
+│   │   │   │   └── mappers/
+│   │   │   │       └── user.mapper.ts
+│   │   │   └── presentation/
+│   │   │       ├── controllers/
+│   │   │       │   └── user.controller.ts
+│   │   │       ├── dtos/
+│   │   │       └── user.router.ts
+│   │   ├── posts/
+│   │   │   ├── application/
+│   │   │   ├── domain/
+│   │   │   ├── infrastructure/
+│   │   │   └── presentation/
+│   │   └── index.ts
 │   ├── shared/
-│   │   ├── utils/
-│   │   │   ├── loadEnvs.ts
-│   │   │   ├── logger.ts
-│   │   └── server.ts
-├── prisma/
-│   ├── migrations/
-│   └── schema.prisma
-├── tests/
-│   ├── integration/
-│   └── unit/
+│   │   ├── domain/
+│   │   ├── infrastructure/
+│   │   │   ├── database/
+│   │   │   │   ├── prisma/
+│   │   │   │   │   ├── generated/
+│   │   │   │   │   ├── migrations/
+│   │   │   │   │   └── schema.prisma
+│   │   │   │   └── prisma-client.ts
+│   │   │   └── repositories/
+│   │   │       └── base-repository.ts
+│   │   └── utils/
+│   │       ├── loadEnvs.ts
+│   │       └── logger.ts
+│   └── server.ts
 ├── .env.example
 ├── .gitignore
 ├── eslint.config.js
 ├── nodemon.json
 ├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
 ├── tsconfig.json
 └── README.md
 ```
@@ -138,19 +158,21 @@ pnpm start
 ### Directory Structure Explanation
 
 - **src/**: Source code of the application
-  - **app/**: Feature-based modules
-    - **users/**: User-related features
-    - **posts/**: Blog post-related features
-  - **config/**: Application configuration files
-  - **middleware/**: Express middleware functions
-  - **utils/**: Shared utilities and helpers
+  - **features/**: Feature-based modules following clean architecture
+    - **auth/**: Authentication and authorization features
+    - **users/**: User management features
+    - **posts/**: Blog post management features
+    - Each feature follows the clean architecture pattern:
+      - **application/**: Application services and use cases
+      - **domain/**: Domain entities, value objects, and repository interfaces
+      - **infrastructure/**: External adapters (database, APIs, etc.)
+      - **presentation/**: Controllers, DTOs, and route definitions
+  - **shared/**: Shared code across features
+    - **domain/**: Shared domain objects
+    - **infrastructure/**: Shared infrastructure components (database, repositories)
+    - **utils/**: Shared utilities and helpers
 
-- **prisma/**: Database schema and migrations
-- **tests/**: Test files
-  - **integration/**: Integration tests
-  - **unit/**: Unit tests
-- **docker/**: Docker-related files
-- **docker-compose.yml**: Base Docker composition
-- **docker-compose.dev.yml**: Development-specific Docker overrides
+- **compose/**: Docker-related files
+- **logs/**: Application log files
 
 [Rest of the README remains the same...]
