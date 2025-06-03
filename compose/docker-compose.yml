@@ -1,0 +1,29 @@
+version: "3.8"
+
+name: blog-post-api
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: compose/Dockerfile
+    container_name: blog-post-api
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../.env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:17.5-alpine
+    container_name: blog-post-api-postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - ../.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

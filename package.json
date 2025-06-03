@@ -9,13 +9,21 @@
     "build": "tsc && tsc-alias",
     "start": "node dist/src/server.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prisma:format": "prisma format --schema=./src/shared/infrastructure/database/prisma/schema.prisma",
+    "prisma:reset": "prisma migrate reset --schema=./src/shared/infrastructure/database/prisma/schema.prisma",
+    "prisma:generate": "prisma generate --schema=./src/shared/infrastructure/database/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema=./src/shared/infrastructure/database/prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema=./src/shared/infrastructure/database/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@auth/express": "^0.10.1",
+    "@auth/prisma-adapter": "^2.9.1",
+    "@prisma/client": "^6.8.2",
     "express": "^5.1.0",
     "winston": "^3.17.0"
   },
@@ -33,6 +41,7 @@
     "globals": "^16.1.0",
     "nodemon": "^3.0.0",
     "prettier": "^3.5.3",
+    "prisma": "^6.8.2",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3",

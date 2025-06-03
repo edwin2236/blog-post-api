@@ -12,7 +12,8 @@ build/
 # Environment variables
 .env
 .env.local
-.env.*.local
+.env.*
+!.env.example
 
 # IDE and editor files
 .idea/
@@ -46,3 +47,5 @@ temp/
 
 # Optional REPL history
 .node_repl_history
+
+src/shared/infrastructure/database/prisma/generated

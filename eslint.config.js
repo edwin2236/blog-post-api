@@ -7,7 +7,16 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig([
-  { ignores: ['node_modules', 'dist', 'coverage', 'tsconfig.json'] },
+  {
+    ignores: [
+      'node_modules',
+      'dist',
+      'coverage',
+      'tsconfig.json',
+      'src/shared/infrastructure/database/prisma/generated',
+      '**/*.prisma',
+    ],
+  },
   // General rules
   {
     files: ['**/*.{js,mjs,cjs,ts}'],
@@ -57,29 +66,6 @@ export default defineConfig([
             ignoreRestSiblings: false,
             argsIgnorePattern: '^_.*?$',
             varsIgnorePattern: '^_.*?$',
-          },
-        ],
-      },
-    },
-  ],
-
-  // Prettier rules
-  ...[
-    prettier,
-    prettierConfig,
-    {
-      rules: {
-        'prettier/prettier': [
-          'error',
-          {
-            printWidth: 80,
-            trailingComma: 'all',
-            tabWidth: 2,
-            semi: false,
-            singleQuote: true,
-            bracketSpacing: true,
-            arrowParens: 'always',
-            endOfLine: 'auto',
           },
         ],
       },
@@ -136,4 +122,27 @@ export default defineConfig([
       ],
     },
   },
+
+  // Prettier rules
+  ...[
+    prettier,
+    prettierConfig,
+    {
+      rules: {
+        'prettier/prettier': [
+          'error',
+          {
+            printWidth: 90,
+            trailingComma: 'all',
+            tabWidth: 2,
+            semi: false,
+            singleQuote: true,
+            bracketSpacing: true,
+            arrowParens: 'always',
+            endOfLine: 'auto',
+          },
+        ],
+      },
+    },
+  ],
 ])
