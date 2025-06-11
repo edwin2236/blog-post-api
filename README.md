@@ -22,40 +22,40 @@ A RESTful API for managing blog posts built with Node.js, Express, TypeScript, a
 
 1. Clone the repository:
 
-    ```bash
-    git clone https://github.com/edwin2236/blog-post-api.git
-    cd blog-post-api
-    ```
+  ```bash
+  git clone https://github.com/edwin2236/blog-post-api.git
+  cd blog-post-api
+  ```
 
 2. Install dependencies:
 
-    ```bash
-    pnpm install
-    ```
+  ```bash
+  pnpm install
+  ```
 
 3. Set up environment variables:
 
-    ```bash
-    cp .env.example .env && pnpx auth secret
-    ```
+  ```bash
+  cp .env.example .env && pnpx auth secret
+  ```
 
 4. Start the development environment:
 
-    ```bash
-    docker compose up --build -d
-    ```
+  ```bash
+  docker compose up --build -d
+  ```
 
 5. Run generate prisma client
 
-    ```bash
-    pnpm prisma:generate
-    ```
+  ```bash
+  pnpm prisma:generate
+  ```
 
 6. Run database migrations:
 
-    ```bash
-    pnpm prisma:migrate
-    ```
+  ```bash
+  pnpm prisma:migrate
+  ```
 
 ## 🏃‍♂️ Development
 

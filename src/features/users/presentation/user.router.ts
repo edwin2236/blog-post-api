@@ -6,6 +6,23 @@ import { UserController } from '@/features/users/presentation/controllers/user.c
 
 const userRouter: RouterType = Router()
 
+/**
+ * @openapi
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
 userRouter.get('/', UserController.getAllUsers)
 userRouter.get('/:id', UserController.getUserById)
 

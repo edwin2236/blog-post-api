@@ -44,3 +44,6 @@ Thumbs.db
 
 # Compose
 compose
+
+# Prisma
+src/shared/infrastructure/database/prisma/generated

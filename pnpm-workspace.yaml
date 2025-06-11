@@ -1,2 +1,8 @@
+ignoredBuiltDependencies:
+  - '@prisma/engines'
+  - '@scarf/scarf'
+  - prisma
+  - unrs-resolver
 onlyBuiltDependencies:
   - '@prisma/client'
+  - '@swc/core'

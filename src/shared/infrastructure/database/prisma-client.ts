@@ -1,5 +1,6 @@
-import { PrismaClient } from '@/shared/infrastructure/database/prisma/generated/prisma/index.js'
 import { logger } from '@/shared/utils/logger.js'
+
+import { PrismaClient } from 'prisma-db'
 
 declare global {
   // eslint-disable-next-line no-var
@@ -9,19 +10,35 @@ declare global {
 const prisma =
   globalThis.__prisma ||
   new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'],
+    log: [
+      {
+        emit: 'event',
+        level: 'query',
+      },
+      {
+        emit: 'stdout',
+        level: 'error',
+      },
+      {
+        emit: 'stdout',
+        level: 'info',
+      },
+      {
+        emit: 'stdout',
+        level: 'warn',
+      },
+    ],
   })
 
 if (process.env.NODE_ENV !== 'production') {
   globalThis.__prisma = prisma
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-prisma.$on('query', (e: { query: string; params: string; duration: string }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+prisma.$on('query' as never, (e: { query: string; params: any; duration: number }) => {
   logger.info('Query: ' + e.query)
   logger.info('Params: ' + e.params)
   logger.info('Duration: ' + e.duration + 'ms')
 })
 
-export { prisma }
+export { prisma as client }

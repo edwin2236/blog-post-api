@@ -13,6 +13,7 @@ export default defineConfig([
       'dist',
       'coverage',
       'tsconfig.json',
+      'scripts',
       'src/shared/infrastructure/database/prisma/generated',
       '**/*.prisma',
     ],
@@ -106,7 +107,6 @@ export default defineConfig([
             'object', // Object imports (like stylesheets)
           ],
           pathGroups: [
-            // Node.js built-in modules
             {
               pattern: '{node:**,node:**/**}',
               group: 'builtin',
@@ -138,7 +138,7 @@ export default defineConfig([
             semi: false,
             singleQuote: true,
             bracketSpacing: true,
-            arrowParens: 'always',
+            arrowParens: 'avoid',
             endOfLine: 'auto',
           },
         ],

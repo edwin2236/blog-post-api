@@ -1,6 +1,6 @@
 {
   "watch": ["src"],
-  "ext": "ts,json",
+  "ext": ".ts,.js,.json",
   "ignore": ["node_modules", "dist"],
   "exec": "node --no-warnings --loader @swc-node/register/esm -r tsconfig-paths/register src/server.ts"
 }

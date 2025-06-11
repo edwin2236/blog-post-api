@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "ESNext",                    // Use latest ECMAScript features
+    "module": "NodeNext",                  // Use Node's ES modules
+    "moduleResolution": "NodeNext",        // Use Node's module resolution
     "outDir": "dist",
     "rootDir": ".",
     "strict": true,
@@ -12,12 +12,10 @@
     "sourceMap": true,
     "allowJs": true,
     "resolveJsonModule": true,
-    "declaration": true,
+    "declaration": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"],
     }
   },
   "include": [
@@ -27,5 +25,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
 }
