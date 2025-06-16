@@ -1,6 +1,6 @@
-import { authRouter } from '@/features/auth/presentation/auth.router.js'
+import { authRouter } from '@/features/auth/auth.router.js'
 import { App } from '@/features/index.js'
-import { userRouter } from '@/features/users/presentation/user.router.js'
+import { userRouter } from '@/features/users/user.router.js'
 import { NODE_PORT } from '@/shared/utils/constants.js'
 
 App.builder()

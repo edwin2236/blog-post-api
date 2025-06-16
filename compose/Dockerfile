@@ -52,7 +52,7 @@ COPY --from=builder /app/src/shared/infrastructure/database/prisma/generated/pri
 
 # Copy built assets
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/.env ./dist/.env
 
 # Expose port
 EXPOSE 8080

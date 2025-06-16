@@ -1,7 +1,7 @@
 import express, { Application, Router } from 'express'
 import swaggerUi from 'swagger-ui-express'
 
-import { swaggerSpec } from '@/shared/infrastructure/web/swagger.config.js'
+import { swaggerSpec } from '@/shared/configs/swagger.config.js'
 import { API_BASE_URL } from '@/shared/utils/constants.js'
 import { logger } from '@/shared/utils/logger.js'
 
@@ -13,6 +13,7 @@ export class App {
 
   private constructor() {
     this._app = express()
+    this._app.set('trust proxy', true)
     this._app.use(express.json())
   }
 

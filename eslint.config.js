@@ -14,7 +14,7 @@ export default defineConfig([
       'coverage',
       'tsconfig.json',
       'scripts',
-      'src/shared/infrastructure/database/prisma/generated',
+      'src/shared/database/prisma/generated',
       '**/*.prisma',
     ],
   },

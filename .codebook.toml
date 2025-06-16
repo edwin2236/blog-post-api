@@ -32,8 +32,10 @@ ignore_patterns = [
     "^[A-Z]{2,}$",               # All caps words like "HTML", "CSS"
     "https?://[^\\s]+",           # URLs
     "\\b[zZ]od\\b",              # Matches "zod" or "Zod" as whole words only
+    "\\b[pP]risma\\b",           # Matches "prisma" or "Prisma" as whole words
+    "\\b[pP]risma[A-Za-z]*\\b",  # Matches "PrismaClient", "PrismaAdapter", etc.
+    "__prisma\\b",               # Matches "__prisma" variable name
     "bcryptjs",
-    "prisma",
 ]
 
 # Whether to use global configuration (project config only)

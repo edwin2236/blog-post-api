@@ -1,7 +1,7 @@
 import swaggerJsdoc from 'swagger-jsdoc'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
-import { userSchemas } from '@/shared/domain/schemas/user.schema.js'
+import { userSchemas } from '@/shared/schemas/user.schema.js'
 import { API_BASE_URL, NODE_ENV } from '@/shared/utils/constants.js'
 
 // Generate OpenAPI schemas from Zod schemas
@@ -73,7 +73,7 @@ const options = {
       },
     ],
   },
-  apis: ['src/features/*/presentation/*.router.ts'],
+  apis: ['src/features/*/*.router.ts'],
 }
 
 export const swaggerSpec = swaggerJsdoc(options)

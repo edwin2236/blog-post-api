@@ -2,7 +2,7 @@ import type { Router as RouterType } from 'express'
 
 import { Router } from 'express'
 
-import { UserController } from '@/features/users/presentation/controllers/user.controller.js'
+import { UserController } from '@/features/users/controllers/user.controller.js'
 
 const userRouter: RouterType = Router()
 

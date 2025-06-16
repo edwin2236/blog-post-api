@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ESNext",                    // Use latest ECMAScript features
-    "module": "NodeNext",                  // Use Node's ES modules
-    "moduleResolution": "NodeNext",        // Use Node's module resolution
+    "target": "ESNext", // Use latest ECMAScript features
+    "module": "NodeNext", // Use Node's ES modules
+    "moduleResolution": "NodeNext", // Use Node's module resolution
     "outDir": "dist",
     "rootDir": ".",
     "strict": true,
@@ -15,7 +15,9 @@
     "declaration": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": [
+        "src/*"
+      ],
     }
   },
   "include": [
@@ -26,4 +28,8 @@
     "node_modules",
     "dist"
   ],
+  "typeRoots": [
+    "./node_modules/@types",
+    "./src/shared/types/auth"
+  ]
 }

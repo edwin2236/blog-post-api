@@ -34,11 +34,13 @@ if (process.env.NODE_ENV !== 'production') {
   globalThis.__prisma = prisma
 }
 
+const _logger = logger.child({ module: 'PrismaClient' })
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 prisma.$on('query' as never, (e: { query: string; params: any; duration: number }) => {
-  logger.info('Query: ' + e.query)
-  logger.info('Params: ' + e.params)
-  logger.info('Duration: ' + e.duration + 'ms')
+  _logger.info('Query: ' + e.query)
+  _logger.info('Params: ' + e.params)
+  _logger.info('Duration: ' + e.duration + 'ms')
 })
 
 export { prisma as client }

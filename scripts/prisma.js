@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Define schema path relative to project root
-const SCHEMA_PATH = resolve(__dirname, '../src/shared/infrastructure/database/prisma/schema.prisma');
+const SCHEMA_PATH = resolve(__dirname, '../src/shared/database/prisma/schema.prisma');
 
 // Get command line arguments (excluding node and script path)
 const args = process.argv.slice(2);
