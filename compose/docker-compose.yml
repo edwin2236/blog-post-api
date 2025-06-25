@@ -23,5 +23,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    networks:
+      - blog_post_network
+    environment:
+      MH_SMTP_AUTH_USER: mailhog # Add SMTP auth user
+      MH_SMTP_AUTH_PASS: mailhog # Add SMTP auth password
+      MH_STORAGE: memory
+      MH_MAILDIR_PATH: /tmp/maildir
+    volumes:
+      - mailhog_data:/tmp/maildir
+
 volumes:
   postgres_data:
+  mailhog_data:
+    name: blog_post_mailhog_data
+
+networks:
+  blog_post_network:
+    name: blog_post_network

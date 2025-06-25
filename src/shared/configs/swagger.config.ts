@@ -1,12 +1,16 @@
 import swaggerJsdoc from 'swagger-jsdoc'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
+import { authSchemas } from '@/shared/schemas/auth.schema.js'
+import { ErrorResponseSchema } from '@/shared/schemas/response.schema.js'
 import { userSchemas } from '@/shared/schemas/user.schema.js'
 import { API_BASE_URL, NODE_ENV } from '@/shared/utils/constants.js'
 
+const schemas = { ...userSchemas, ...authSchemas, ErrorResponse: ErrorResponseSchema }
+
 // Generate OpenAPI schemas from Zod schemas
 const convertSchemas = () => {
-  const schemas = Object.entries(userSchemas).reduce(
+  const swaggerSchema = Object.entries(schemas).reduce(
     (acc, [key, schema]) => {
       acc[key] = zodToJsonSchema(schema, {
         target: 'openApi3',
@@ -20,7 +24,7 @@ const convertSchemas = () => {
   )
 
   return {
-    ...schemas,
+    ...swaggerSchema,
     Error: {
       type: 'object',
       required: ['message'],

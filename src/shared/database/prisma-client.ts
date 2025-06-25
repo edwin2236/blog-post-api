@@ -3,7 +3,6 @@ import { logger } from '@/shared/utils/logger.js'
 import { PrismaClient } from 'prisma-db'
 
 declare global {
-  // eslint-disable-next-line no-var
   var __prisma: PrismaClient | undefined
 }
 

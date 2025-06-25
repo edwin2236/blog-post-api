@@ -10,20 +10,23 @@ export class UserRepository implements IUserRepository {
     this._logger.defaultMeta = { service: 'UserRepository' }
   }
 
-  findByEmail(email: string): Promise<User | null> {
-    throw new Error('Method not implemented.')
-  }
-  findById(id: string): Promise<User | null> {
-    throw new Error('Method not implemented.')
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  findBy(key: keyof User, value: any): Promise<User | null> {
-    return client.user.findFirst({
-      where: {
-        [key]: value,
+  async findBy(params: Partial<User>): Promise<User | null> {
+    const result = await client.user.findFirst({
+      where: params,
+      omit: {
+        password: true,
       },
     })
+
+    if (!result) return null
+
+    return {
+      ...result,
+      name: result.name ?? undefined,
+      lastName: result.lastName ?? undefined,
+    }
   }
+
   findAll(): Promise<User[]> {
     throw new Error('Method not implemented.')
   }

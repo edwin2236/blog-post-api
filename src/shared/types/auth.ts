@@ -5,8 +5,8 @@ declare module '@auth/express' {
     user: {
       id: string
       email: string
-      name: string
-      lastName: string
+      name?: string
+      lastName?: string
       role: Role
       isActive: boolean
       emailVerified?: Date | null
@@ -22,8 +22,8 @@ declare module '@auth/express' {
   interface JWT {
     id: string
     email: string
-    name: string
-    lastName: string
+    name?: string
+    lastName?: string
     role: Role
     isActive: boolean
     emailVerified?: Date | null
@@ -35,8 +35,8 @@ declare module '@auth/express' {
   interface User {
     id: string
     email: string
-    name: string
-    lastName: string
+    name?: string
+    lastName?: string
     role: Role
     isActive: boolean
     emailVerified?: Date | null

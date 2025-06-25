@@ -1,0 +1,22 @@
+// Project-local debug tasks
+//
+// For more documentation on how to configure debug tasks,
+// see: https://zed.dev/docs/debugger
+[
+  {
+    "label": "Debug with Node.js",
+    "adapter": "JavaScript",
+    "type": "pwa-node",
+    "request": "launch",
+    "runtimeExecutable": "$ZED_WORKTREE_ROOT/node_modules/.bin/nodemon",
+    "program": "$ZED_FILE",
+    "sourceMaps": true,
+    "resolveSourceMapLocations": [
+      "$ZED_WORKTREE_ROOT/**",
+      "!**/node_modules/**"
+    ],
+    "protocol": "inspector",
+    "console": "integratedTerminal",
+    "cwd": "$ZED_WORKTREE_ROOT"
+  }
+]

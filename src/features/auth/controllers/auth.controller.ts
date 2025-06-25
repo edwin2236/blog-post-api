@@ -3,6 +3,10 @@ import { Request, Response } from 'express'
 import { IAuthRepository } from '@/features/auth/repository-interfaces/auth.repository.interface.js'
 import { IUserRepository } from '@/features/users/repostory-interfaces/user.repository.interface.js'
 import { CreateUserSchema } from '@/shared/schemas/user.schema.js'
+import { IEmailService } from '@/shared/services/email.service.js'
+import { HttpStatus } from '@/shared/types/http-status.js'
+import { APP_BASE_URL } from '@/shared/utils/constants.js'
+import { HttpResponse, HttpError } from '@/shared/utils/http-response.js'
 import { logger } from '@/shared/utils/logger.js'
 
 export class AuthController {
@@ -11,6 +15,7 @@ export class AuthController {
   constructor(
     private readonly authRepository: IAuthRepository,
     private readonly userRepository: IUserRepository,
+    private readonly emailService: IEmailService,
   ) {
     this._logger.defaultMeta = { service: 'AuthController' }
   }
@@ -18,15 +23,10 @@ export class AuthController {
   public authenticate = async (email: string, password: string) => {
     try {
       if (!email || !password) {
-        this._logger.error('Email and password are required')
-        throw new Error('Email and password are required')
+        return null
       }
 
-      this._logger.info('Attempting to login user %s', { email })
-
       const user = await this.authRepository.findByCredentials(email, password)
-
-      this._logger.info('User logged in successfully', { userId: user.id })
 
       return user
     } catch (error) {
@@ -42,78 +42,105 @@ export class AuthController {
       const result = CreateUserSchema.safeParse(input)
 
       if (!result.success) {
-        this._logger.warning('Invalid input %s', { input })
-
-        return res.status(400).json({
-          message: 'Invalid input',
-          errors: result.error.errors.map(error => ({
-            field: error.path,
-            message: error.message,
-          })),
-        })
+        return res.status(HttpStatus.BAD_REQUEST).json(
+          new HttpError(
+            HttpStatus.BAD_REQUEST,
+            'Invalid input',
+            result.error.errors.map(error => ({
+              field: String(error.path),
+              message: error.message,
+            })),
+          ),
+        )
       }
 
-      const userExists = await this.userRepository.findBy('email', result.data.email)
+      const userExists = await this.userRepository.findBy({ email: result.data.email })
 
       if (userExists) {
-        this._logger.warning('User already exists %s', { email: result.data.email })
-
-        return res.status(409).json({ message: 'User already exists' })
+        return res
+          .status(HttpStatus.CONFLICT)
+          .json(new HttpError(HttpStatus.CONFLICT, 'User already exists'))
       }
 
       const newUser = await this.authRepository.register(result.data)
 
-      this._logger.info('User registered successfully %s', newUser.id)
-
-      return res.status(201).json(newUser)
+      return res
+        .status(HttpStatus.CREATED)
+        .json(new HttpResponse(HttpStatus.CREATED, newUser))
     } catch (error) {
       this._logger.error('Failed to register user %s', { error })
 
-      return { message: 'Internal server error', error }
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, 'Internal server error'))
     }
   }
 
-  public resetPassword = async (req: Request, res: Response): Promise<void> => {
+  public resetPassword = async (req: Request, res: Response) => {
     try {
       const { email } = req.body
 
       if (!email) {
-        this._logger.warn('Missing required fields', { email })
-        res.status(400).json({ message: 'Email is required' })
-
-        return
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(new HttpError(HttpStatus.BAD_REQUEST, 'Email is required'))
       }
 
-      this._logger.info('Attempting to reset password', { email })
-      await this.authRepository.resetPassword(email)
+      const user = await this.userRepository.findBy({ email })
 
-      this._logger.info('Password reset email sent', { email })
-      res.status(200).json({ message: 'Password reset email sent' })
+      if (!user) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json(new HttpError(HttpStatus.NOT_FOUND, 'User not found'))
+      }
+
+      const token = await this.authRepository.generateResetPasswordToken(email)
+
+      const url = `${APP_BASE_URL}/reset-password/${token}`
+
+      this.emailService.sendEmail(
+        email,
+        'Password Reset  ',
+        `Hello ${user.name}, please click the link below to reset your password. \n<a href="${url}">Reset Password</a>`,
+      )
+
+      return res
+        .status(HttpStatus.OK)
+        .json(new HttpResponse(HttpStatus.OK, { message: 'Password reset email sent' }))
     } catch (error) {
       this._logger.error('Failed to initiate password reset', { error })
-      res.status(500).json({ message: 'Internal server error' })
+      res.status(500).json(new HttpError(500, 'Internal server error'))
     }
   }
 
-  public resetPasswordConfirm = async (req: Request, res: Response): Promise<void> => {
+  public resetPasswordConfirm = async (req: Request, res: Response) => {
     try {
-      const { email, token, password } = req.body
+      const { encodedToken, password } = req.body
 
-      if (!email || !token || !password) {
-        this._logger.warn('Missing required fields', { email })
-        res.status(400).json({ message: 'Email, token, and new password are required' })
+      if (!encodedToken || !password) {
+        this._logger.warning('Missing required fields')
 
-        return
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json(new HttpError(HttpStatus.BAD_REQUEST, 'Missing required fields'))
       }
 
-      this._logger.info('Attempting to confirm password reset', { email })
-      await this.authRepository.resetPasswordConfirm(email, token, password)
+      const decodedToken = this.authRepository.decodeResetPasswordToken(encodedToken)
 
-      this._logger.info('Password reset completed', { email })
-      res.status(200).json({ message: 'Password reset successful' })
+      await this.authRepository.resetPasswordConfirm(
+        decodedToken.email,
+        decodedToken.token,
+        password,
+      )
+
+      return res
+        .status(HttpStatus.OK)
+        .json(new HttpResponse(HttpStatus.OK, 'Password reset successful'))
     } catch (error) {
       this._logger.error('Failed to confirm password reset', { error })
-      res.status(500).json({ message: 'Internal server error' })
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json(new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, 'Internal server error'))
     }
   }
 }

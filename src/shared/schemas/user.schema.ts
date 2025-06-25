@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { ResponseSchema } from '@/shared/schemas/response.schema.js'
+
 const Roles = z.enum(['USER', 'ADMIN'], {
   description: "The user's role in the system",
   errorMap: _issue => ({
@@ -12,12 +14,13 @@ export const UserSchema = z.object({
   id: z.string().uuid().describe('The unique identifier of the user'),
   email: z.string().email().describe("The user's email address"),
   emailVerified: z.date().nullable().describe("When the user's email was verified"),
-  name: z.string().min(2).max(100).describe("The user's first name"),
-  lastName: z.string().min(2).max(100).describe("The user's last name"),
+  name: z.string().min(2).max(100).optional().describe("The user's first name"),
+  lastName: z.string().min(2).max(100).optional().describe("The user's last name"),
   password: z
     .string()
     .min(8)
     .max(100)
+    .optional()
     .describe("The user's password - minimum 8 characters"),
   createdAt: z.date().describe('When the user was created'),
   updatedAt: z.date().describe('When the user was last updated'),
@@ -33,7 +36,11 @@ export const CreateUserSchema = UserSchema.omit({
   updatedAt: true,
   isActive: true,
   role: true,
-}).describe('Data required to create a new user')
+})
+  .required({
+    password: true,
+  })
+  .describe('Data required to create a new user')
 
 // Schema for user responses (without sensitive data)
 export const UserResponseSchema = UserSchema.omit({
@@ -53,7 +60,7 @@ export const LoginSchema = z
 export const userSchemas = {
   User: UserSchema,
   CreateUser: CreateUserSchema,
-  UserResponse: UserResponseSchema,
+  UserResponse: ResponseSchema(UserResponseSchema),
   Login: LoginSchema,
 } as const
 
